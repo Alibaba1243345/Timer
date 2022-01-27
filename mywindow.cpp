@@ -5,40 +5,48 @@ mywindow::mywindow()
 
     this->setGeometry(100,100,800,600);
 
-    QFont *font = new QFont("Times", 22, true);
+    lcd = new QLCDNumber(this);
+    lcd->setGeometry(50,20, 200, 30);
+    lcd->display(0);
 
+    btnStart = new QPushButton(this);
+    btnStart->setGeometry(50,50, 150,50);
+    btnStart->setText("Start");
 
-    label =new QLabel(this);
-    label -> setText("Боль");
-    label ->setGeometry(20,100,100,200);
-    label ->setFont(*font);
+    timer = new QTimer(this);
+    timer->setInterval(1000);
 
+    btnre = new QPushButton(this);
+    btnre->setGeometry(50,100, 150,50);
+    btnre->setText("0");
 
-    edit = new QLineEdit(this);
-    edit->setGeometry(150, 200, 500, 20);
+    second = 0;
 
-    ok = new QPushButton(this);
-    ok->setGeometry(150, 250, 50, 20);
-    ok->setText("Я хочу умереть");
-
-    btnClose = new QPushButton(this);
-    btnClose->setGeometry(400,100,100,30);
-    btnClose->setText("Close");
-
-    connect(this->ok, SIGNAL(clicked(bool)), this, SLOT(say()));
+    connect(this->timer, SIGNAL(timeout()), this, SLOT(time()));
+    connect(this->btnStart, SIGNAL(clicked(bool)), this, SLOT(start()));
+    connect(this->btnre, SIGNAL(clicked(bool)), this, SLOT(re()));
 }
 
-void mywindow :: say (){
-    QString name = this->edit->text();
-    QMessageBox * mes = new QMessageBox(this);
-    mes->setText("Привет " + name +" !");
-    mes->show();
+void mywindow::time(){
+    second++;
+    lcd->display(second);
+}
+void mywindow::start(){
+    if(timer->isActive()){
+        timer->stop();
+        btnStart->setText("Start");
 
+    }
+    else{
+        timer->start();
+        btnStart->setText("Stop");
+    }
 }
 
-void mywindow::close(){
-    exit(0);
-    show();
+void mywindow::re(){
+
+    second = second -second;
+    timer->stop();
 }
 
 
